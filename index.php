@@ -60,15 +60,19 @@
 					endif;
 				endforeach;
 			endforeach;
+			
+			// check for receivable purchaseorder
 			if($this->received[$productid][$dayid] > 0 ):
 				$this->inventory[$productid] += $this->received[$productid][$dayid];
 				$this->totalreceived[$productid] += $this->received[$productid][$dayid];
 			endif;
 			
+			// check for pending purchaseorder
 			if($this->pending[$productid][$dayid] > 0 ):
 				$this->totalpending[$productid] += $this->pending[$productid][$dayid];
 			endif;
 			
+			// update the stocks after validating the number of stocks
 			if($this->inventory[$productid] > 0 && ($this->inventory[$productid] - $totalSoldPerDay) > 0):
 				$this->sold[$productid] += $totalSoldPerDay;
 				$this->inventory[$productid] -= $totalSoldPerDay;
@@ -78,6 +82,7 @@
 			endif;
 		}
 		
+		// hanldes the purchase order
 		public function requestForStocks($productid, $dayid){
 			$this->pending[$productid][$dayid + 1] = 20;
 			$this->received[$productid][$dayid + 2] = 20;
@@ -164,6 +169,7 @@
 	$order->processFromJson($file);
 	// unlink($file);
 	
+	// Product Names
 	$prod = new ReflectionClass('Products');
 	$product_names = $prod->getConstants();
 	$days = 7;
